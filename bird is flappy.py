@@ -11,14 +11,16 @@ clock = pygame.time.Clock()
 font1 = pygame.font.Font(None, 35)
 font2 = pygame.font.Font(None, 80)
 
-imgBG = pygame.image.load("background.png")
-imgBird = pygame.image.load("bird.png")
+imgBG = pygame.image.load("background2.png")
+imgBird = pygame.image.load("bird_Skin.png")
 imgBird2 = pygame.image.load("bird_Skin2.png")
-imgPT = pygame.image.load("pipe_top.png")
-imgPB = pygame.image.load("pipe_bottom.png")
+imgPT = pygame.image.load("pipe_top2.png")
+imgPB = pygame.image.load("pipe_bottom2.png")
 imgBG_night = pygame.image.load("background_night.png")
 fon = imgBG
 bird = imgBird
+
+
 
 py, sy, ay = HEIGHT // 2, 0, 0
 player = pygame.Rect(WIDTH // 3, py, 34, 24)
@@ -27,7 +29,6 @@ dscores = 0
 
 state = "start"
 timer = 60
-
 pipes = []
 bges = []
 
@@ -35,6 +36,10 @@ bges.append(pygame.Rect(0, 0, 288, 600))
 
 lives = 3
 scores = 0
+maxs = 0
+
+Up = -2
+Down = -0.5
 
 play = True
 while play:
@@ -65,9 +70,10 @@ while play:
         pipe = pipes[i]
         pipe.x -= 3
 
-        if pipe.x == WIDTH // 3:
-            scores += 1
-            dscores += 1
+        if state == "play":
+            if pipe.x == WIDTH // 3:
+                scores += 1
+                dscores += 1
 
         if dscores // 2 == 5:
             fon = imgBG_night
@@ -80,6 +86,13 @@ while play:
         if pipe.right < 0:
             pipes.remove(pipe)
 
+        if lives == 0:
+            lives = 3
+            scores = 0
+
+        if scores > maxs:
+            maxs = scores
+
     if state == "start":
         if click and timer == 0 and len(pipes) == 0:
             state = "play"
@@ -88,9 +101,10 @@ while play:
         player.y = py
     elif state == "play":
         if click:
-            ay = -2
+            ay = Up
         else:
-            ay = -0.3
+            if timer == 0:
+                ay = Down
 
         py += sy
         sy = (sy + ay + 1) * 0.98
@@ -98,9 +112,10 @@ while play:
 
         m = r.randrange(0, 200)
 
+
         if len(pipes) == 0 or pipes[len(pipes)-1].x < WIDTH - 300:
             pipes.append(pygame.Rect(WIDTH, m, 52, 200))
-            pipes.append(pygame.Rect(WIDTH, m + 350, 52, 200))
+            pipes.append(pygame.Rect(WIDTH, m + 380, 52, 200))
 
         if player.top < 0 or player.bottom > HEIGHT:
             state = "fall"
@@ -133,12 +148,16 @@ while play:
             rect = imgPB.get_rect(topleft = pipe.topleft)
             window.blit(imgPB, rect)
 
+
     image = bird.subsurface(34 * int(frame), 0 , 34, 24)
     image = pygame.transform.rotate(image, -sy * 2)
     window.blit(image, player)
 
     text = font1.render("Очки: " + str(scores // 2), 1, pygame.Color("black"))
     window.blit(text, (10, 10))
+
+    text = font1.render("Макс Очки: " + str(scores // 2), 1, pygame.Color("black"))
+    window.blit(text, (10, 100))
 
     text = font1.render("HP: " + str(lives), 1, pygame.Color("red"))
     window.blit(text, (10, HEIGHT - 30))
