@@ -11,16 +11,20 @@ clock = pygame.time.Clock()
 font1 = pygame.font.Font(None, 35)
 font2 = pygame.font.Font(None, 80)
 
-imgBG = pygame.image.load("background2.png")
+imgBG = pygame.image.load("background.png")
 imgBird = pygame.image.load("bird_Skin.png")
 imgBird2 = pygame.image.load("bird_Skin2.png")
 imgPT = pygame.image.load("pipe_top2.png")
 imgPB = pygame.image.load("pipe_bottom2.png")
 imgBG_night = pygame.image.load("background_night.png")
+imgHEAR_DIE = pygame.image.load("HEART_DIE.png")
 fon = imgBG
 bird = imgBird
+FpS = r.randrange(1,2)
 
-
+p = r.randrange(0, 200)
+pr = p + 380
+pt = r.randrange(p, pr)
 
 py, sy, ay = HEIGHT // 2, 0, 0
 player = pygame.Rect(WIDTH // 3, py, 34, 24)
@@ -29,6 +33,7 @@ dscores = 0
 
 state = "start"
 timer = 60
+timerV2 = 120
 pipes = []
 bges = []
 
@@ -40,6 +45,8 @@ maxs = 0
 
 Up = -2
 Down = -0.5
+HEARTS = []
+show_heart = 0
 
 play = True
 while play:
@@ -50,9 +57,17 @@ while play:
     press = pygame.mouse.get_pressed()
     keys = pygame.key.get_pressed()
     click = press[0] or keys[pygame.K_SPACE]
+    SPEED1 = keys[pygame.K_q]
+    SPEED2 = keys[pygame.K_e]
+    SPEED3 = keys[pygame.K_w]
     
     if timer > 0:
         timer -= 1
+    if timerV2 > 0:
+        timerV2 -= 1
+    if timerV2 == 0:
+        timerV2 = 120
+        show_heart = r.randint(2,2)
 
     frame = (frame + 0.2) % 4
 
@@ -69,6 +84,15 @@ while play:
     for i in range(len(pipes)-1, -1, -1):
         pipe = pipes[i]
         pipe.x -= 3
+        for h in HEARTS:
+            h[0] -= 1
+
+        if SPEED1:
+            FPS = 30
+        if SPEED2:
+            FPS = 80
+        if SPEED3:
+            FPS = 60
 
         if state == "play":
             if pipe.x == WIDTH // 3:
@@ -86,6 +110,13 @@ while play:
         if pipe.right < 0:
             pipes.remove(pipe)
 
+        if show_heart == 2:
+            HEARTS.append([pt, py])
+            show_heart = 0
+        for k,h in enumerate(HEARTS):
+            if h[0] < 0:
+                HEARTS.remove(h)
+            
         if lives == 0:
             lives = 3
             scores = 0
@@ -110,12 +141,14 @@ while play:
         sy = (sy + ay + 1) * 0.98
         player.y = py
 
-        m = r.randrange(0, 200)
+        p = r.randrange(0, 200)
+        pr = p + 380
+        pt = r.randrange(p, pr)
 
 
         if len(pipes) == 0 or pipes[len(pipes)-1].x < WIDTH - 300:
-            pipes.append(pygame.Rect(WIDTH, m, 52, 200))
-            pipes.append(pygame.Rect(WIDTH, m + 380, 52, 200))
+            pipes.append(pygame.Rect(WIDTH, p, 52, 200))
+            pipes.append(pygame.Rect(WIDTH, p + 380, 52, 200))
 
         if player.top < 0 or player.bottom > HEIGHT:
             state = "fall"
@@ -125,6 +158,15 @@ while play:
             if player.colliderect(pipe):
                 state = "fall"
                 lives -= 1
+
+        for h in HEARTS:
+            if player.colliderect(pygame.Rect(h[0]+1, h[1]+1, 30, 30)):
+                if FpS == 1 or FpS == 2:
+                    FPS += 5
+                    FpS = r.randrange(1,4)
+                else:
+                    FPS -= 5
+                    FpS = r.randrange(1,5)
     elif state == "fall":
         sy, ay = 0, 0
         state = "start"
@@ -147,6 +189,10 @@ while play:
         else:
             rect = imgPB.get_rect(topleft = pipe.topleft)
             window.blit(imgPB, rect)
+
+    image2 = imgHEAR_DIE
+    for h in HEARTS:
+        window.blit(image2, pygame.Rect(h[0], h[1], 34, 34))
 
 
     image = bird.subsurface(34 * int(frame), 0 , 34, 24)
