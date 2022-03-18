@@ -18,9 +18,12 @@ imgPT = pygame.image.load("pipe_top2.png")
 imgPB = pygame.image.load("pipe_bottom2.png")
 imgBG_night = pygame.image.load("background_night.png")
 imgHEAR_DIE = pygame.image.load("HEART_DIE.png")
+imgMenu = pygame.image.load("Menu.png")
 fon = imgBG
 bird = imgBird
 FpS = r.randrange(1,2)
+Menu = imgMenu
+ExitMenu = 1
 
 p = r.randrange(0, 200)
 pr = p + 380
@@ -30,6 +33,10 @@ py, sy, ay = HEIGHT // 2, 0, 0
 player = pygame.Rect(WIDTH // 3, py, 34, 24)
 frame = 0
 dscores = 0
+Menu2 = pygame.Rect(70, 100, 650, 450)
+
+RED = (255, 0, 0)
+imgMenu.set_colorkey(RED)
 
 state = "start"
 timer = 60
@@ -55,12 +62,12 @@ while play:
             play = False
 
     press = pygame.mouse.get_pressed()
+    START = pygame.mouse.get_pressed()
     keys = pygame.key.get_pressed()
     click = press[0] or keys[pygame.K_SPACE]
     SPEED1 = keys[pygame.K_q]
     SPEED2 = keys[pygame.K_e]
     SPEED3 = keys[pygame.K_w]
-    
     if timer > 0:
         timer -= 1
     if timerV2 > 0:
@@ -70,6 +77,15 @@ while play:
         show_heart = r.randint(2,2)
 
     frame = (frame + 0.2) % 4
+
+    if event.type == pygame.MOUSEBUTTONUP:
+        pos = pygame.mouse.get_pos()
+        print(pos)
+        if pos[1] > 386 and pos[1] < 468 and pos[0] > 116 and pos[0] < 303:
+            ExitMenu = 0
+            imgMenu.set_alpha(0)
+        if pos[1] > 384 and pos[1] < 469 and pos[0] > 501 and pos[0] < 707:
+            play = False
 
     for i in range(len(bges)-1, -1, -1):
         bg = bges[i]
@@ -125,7 +141,7 @@ while play:
             maxs = scores
 
     if state == "start":
-        if click and timer == 0 and len(pipes) == 0:
+        if click and timer == 0 and len(pipes) == 0 and ExitMenu == 0:
             state = "play"
 
         py += (HEIGHT // 2 - py) * 0.1
@@ -161,6 +177,7 @@ while play:
 
         for h in HEARTS:
             if player.colliderect(pygame.Rect(h[0]+1, h[1]+1, 30, 30)):
+                HEARTS.remove(h)
                 if FpS == 1 or FpS == 2:
                     FPS += 5
                     FpS = r.randrange(1,4)
@@ -193,6 +210,7 @@ while play:
     image2 = imgHEAR_DIE
     for h in HEARTS:
         window.blit(image2, pygame.Rect(h[0], h[1], 34, 34))
+    window.blit(Menu, Menu2)
 
 
     image = bird.subsurface(34 * int(frame), 0 , 34, 24)
@@ -203,7 +221,7 @@ while play:
     window.blit(text, (10, 10))
 
     text = font1.render("Макс Очки: " + str(scores // 2), 1, pygame.Color("black"))
-    window.blit(text, (10, 100))
+    window.blit(text, (10, 70))
 
     text = font1.render("HP: " + str(lives), 1, pygame.Color("red"))
     window.blit(text, (10, HEIGHT - 30))
