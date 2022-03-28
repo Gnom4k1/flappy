@@ -1,3 +1,4 @@
+from tkinter import E, OFF
 import pygame
 import random as r
 pygame.init()
@@ -21,6 +22,10 @@ imgHEAR_DIE = pygame.image.load("HEART_DIE.png")
 imgMenu = pygame.image.load("Menu.png")
 MULTIVERSE = pygame.image.load("MULTIVERSE.png")
 imgRESET = pygame.image.load("RESET.png")
+imgSETTING = pygame.image.load("SETTING.png")
+imgOFF = pygame.image.load("Menu_SOUND_OFF.png")
+imgLIGHT = pygame.image.load("LIGHT_THEME.png")
+imgDARK = pygame.image.load("DARK_THEME.png")
 fon = imgBG
 bird = imgBird
 FpS = r.randrange(1,2)
@@ -35,12 +40,15 @@ pt = r.randrange(p, pr)
 py, sy, ay = HEIGHT // 2, 0, 0
 player = pygame.Rect(WIDTH // 3, py, 34, 24)
 clock_item = pygame.Rect(650, 132, 50, 50)
+SETTING_BUTTON = pygame.Rect(700, 25, 50, 50)
 RESET = pygame.Rect(30,132, 50, 50)
+DARK_TEM = pygame.Rect(275,244, 50, 50)
 WHITE = (255,255,255)
 MULTIVERSE.set_colorkey(WHITE)
 frame = 0
 dscores = 0
 Menu2 = pygame.Rect(70, 100, 650, 450)
+MenuOFF = pygame.Rect(70, 100, 650, 450)
 
 RED = (255, 0, 0)
 imgMenu.set_colorkey(RED)
@@ -54,6 +62,7 @@ timerV2 = 120
 pipes = []
 bges = []
 hard = 200
+theme = 1
 
 bges.append(pygame.Rect(0, 0, 288, 600))
 
@@ -111,18 +120,20 @@ while play:
             if pos[1] > 148 and pos[1] < 181 and pos[0] > 659 and pos[0] < 685:
                 fon = imgBG_night
                 MULTIVERSE.set_alpha(0)
-                lives = 0.5
-                livesall = 2
-                hard = 314
-                FPS = 30
+
+
+    if event.type == pygame.MOUSEBUTTONUP:
+        pos4 = pygame.mouse.get_pos()
+        if pos[1] > 25 and pos[1] < 75 and pos[0] > 700 and pos[0] < 750:
+            ExitMenu = 3
+
 
     if event.type == pygame.MOUSEBUTTONUP:
         pos3 = pygame.mouse.get_pos()
-        print(pos3)
         if ExitMenu == 1:
             if pos[1] > 129 and pos[1] < 181 and pos[0] > 30 and pos[0] < 80:
                 pipes.remove(pipe)
-                print("да")
+
 
     if CLOSE:
         play = False
@@ -155,14 +166,6 @@ while play:
                 scores += 1
                 dscores += 1
 
-        if dscores // 2 == 5:
-            fon = imgBG_night
-            bird = imgBird2
-        if dscores // 2 == 10:
-            fon = imgBG
-            bird = imgBird
-            dscores = 0
-
         if pipe.right < 0:
             pipes.remove(pipe)
 
@@ -175,7 +178,6 @@ while play:
 
         if event.type == pygame.MOUSEBUTTONUP:
             pos3 = pygame.mouse.get_pos()
-            print(pos3)
             if pos[1] > 129 and pos[1] < 181 and pos[0] > 30 and pos[0] < 80:
                 pipes.remove(pipe)
                 state = "fall"
@@ -183,19 +185,15 @@ while play:
                 scores = 0
                 dscores = 0
 
-            if RESET_b:
-                pipes.remove(pipe)
-                state = "fall"
-                lives = 3
-                scores = 0
-                dscores = 0
+        if RESET_b:
+            pipes.remove(pipe)
+            state = "fall"
+            lives = 3
+            scores = 0
+            dscores = 0
 
             
         if lives <= 0:
-            if livesall == 2:
-                lives = 0.5
-                scores = -10
-            else:
                 lives = 3
                 scores = 0
 
@@ -268,12 +266,35 @@ while play:
     image2 = imgHEAR_DIE
     Clocks = MULTIVERSE
     RESETBUTT = imgRESET
+    Menushka = imgMenu
     for h in HEARTS:
         window.blit(image2, pygame.Rect(h[0], h[1], 34, 34))
-    window.blit(Menu, Menu2)
+    window.blit(Menushka, Menu2)
+    if theme == 1:
+        THEME = imgLIGHT
+    if theme == 2:
+        THEME = imgDARK
+    if state == "start":
+        if ExitMenu == 3:
+            Menushka = imgOFF
+            window.blit(Menushka, Menu2)
+            imgBird.set_alpha(0)
+            window.blit(THEME, DARK_TEM)
+    if event.type == pygame.MOUSEBUTTONUP:
+        pos5 = pygame.mouse.get_pos()
+        print(pos5)
+        if pos[1] > 229 and pos[1] < 294 and pos[0] > 265 and pos[0] < 331:
+            if fon == imgBG:
+                theme = 2
+                fon = imgBG_night
+            else:
+                theme = 1
+                fon = imgBG
+
     window.blit(Clocks, clock_item)
     if ExitMenu == 0:
         window.blit(RESETBUTT, RESET)
+    window.blit(imgSETTING, SETTING_BUTTON)
 
 
     image = bird.subsurface(34 * int(frame), 0 , 34, 24)
