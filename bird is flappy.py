@@ -1,4 +1,3 @@
-from tkinter import E, OFF
 import pygame
 import random as r
 pygame.init()
@@ -11,6 +10,8 @@ clock = pygame.time.Clock()
 
 font1 = pygame.font.Font(None, 35)
 font2 = pygame.font.Font(None, 80)
+
+kastil = 698
 
 imgBG = pygame.image.load("background.png")
 imgBird = pygame.image.load("bird_Skin.png")
@@ -26,6 +27,7 @@ imgSETTING = pygame.image.load("SETTING.png")
 imgOFF = pygame.image.load("Menu_SOUND_OFF.png")
 imgLIGHT = pygame.image.load("LIGHT_THEME.png")
 imgDARK = pygame.image.load("DARK_THEME.png")
+imgBACK = pygame.image.load("BACK.png")
 fon = imgBG
 bird = imgBird
 FpS = r.randrange(1,2)
@@ -43,6 +45,7 @@ clock_item = pygame.Rect(650, 132, 50, 50)
 SETTING_BUTTON = pygame.Rect(700, 25, 50, 50)
 RESET = pygame.Rect(30,132, 50, 50)
 DARK_TEM = pygame.Rect(275,244, 50, 50)
+BACK = pygame.Rect(650,136,50,50)
 WHITE = (255,255,255)
 MULTIVERSE.set_colorkey(WHITE)
 frame = 0
@@ -55,6 +58,8 @@ imgMenu.set_colorkey(RED)
 
 WHITE2 = (255,255,255)
 imgBird.set_colorkey(WHITE2)
+
+imgBACK.set_alpha(0)
 
 state = "start"
 timer = 60
@@ -134,6 +139,14 @@ while play:
             if pos[1] > 129 and pos[1] < 181 and pos[0] > 30 and pos[0] < 80:
                 pipes.remove(pipe)
 
+
+    if event.type == pygame.MOUSEBUTTONUP:
+        pos6 = pygame.mouse.get_pos()
+        if ExitMenu == 3:
+            if pos[1] > 134 and pos[1] < 184 and pos[0] > 650 and pos[0] < 698:
+                ExitMenu = 1
+                imgBACK.set_alpha(0)
+                imgBird.set_alpha(300)
 
     if CLOSE:
         play = False
@@ -280,6 +293,8 @@ while play:
             window.blit(Menushka, Menu2)
             imgBird.set_alpha(0)
             window.blit(THEME, DARK_TEM)
+            MULTIVERSE.set_alpha(0)
+            imgBACK.set_alpha(300)
     if event.type == pygame.MOUSEBUTTONUP:
         pos5 = pygame.mouse.get_pos()
         print(pos5)
@@ -300,6 +315,9 @@ while play:
     image = bird.subsurface(34 * int(frame), 0 , 34, 24)
     image = pygame.transform.rotate(image, -sy * 2)
     window.blit(image, player)
+
+    imgBack = imgBACK
+    window.blit(imgBack, BACK)
 
     if ExitMenu == 0:
         text = font1.render("Очки: " + str(scores // 2), 1, pygame.Color("black"))
