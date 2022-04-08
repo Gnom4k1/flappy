@@ -28,6 +28,10 @@ imgOFF = pygame.image.load("Menu_SOUND_OFF.png")
 imgLIGHT = pygame.image.load("LIGHT_THEME.png")
 imgDARK = pygame.image.load("DARK_THEME.png")
 imgBACK = pygame.image.load("BACK.png")
+imgApple = pygame.image.load("apple.png")
+imgBOMB = pygame.image.load("BOMB.png")
+imgPineapple = pygame.image.load("pineapple.png")
+imgWatermelon = pygame.image.load("WATERMELON.png")
 fon = imgBG
 bird = imgBird
 FpS = r.randrange(1,2)
@@ -52,6 +56,7 @@ frame = 0
 dscores = 0
 Menu2 = pygame.Rect(70, 100, 650, 450)
 MenuOFF = pygame.Rect(70, 100, 650, 450)
+spawn_F = r.randrange(1, 4)
 
 RED = (255, 0, 0)
 imgMenu.set_colorkey(RED)
@@ -61,9 +66,15 @@ imgBird.set_colorkey(WHITE2)
 
 imgBACK.set_alpha(0)
 
+imgBOMB.set_alpha(0)
+imgWatermelon.set_alpha(0)
+imgApple.set_alpha(0)
+imgPineapple.set_alpha(0)
+
 state = "start"
 timer = 60
 timerV2 = 120
+timerV3 = 300
 pipes = []
 bges = []
 hard = 200
@@ -97,6 +108,12 @@ while play:
     Down2 = keys[pygame.K_DOWN]
     RESET_b = keys[pygame.K_r]
     CLOSE = keys[pygame.K_ESCAPE]
+    BOMB = pygame.Rect(750, 200, 50, 50)
+    Watermmelon = pygame.Rect(750, 300, 50, 50)
+    Apple = pygame.Rect(730, 400, 70, 70)
+    Pineapple = pygame.Rect(750, 100, 50, 50)
+    timerV3 = 60
+
 
     if timer > 0:
         timer -= 1
@@ -105,48 +122,58 @@ while play:
     if timerV2 == 0:
         timerV2 = 600
         show_heart = r.randint(2,2)
+    if timerV3 > 0:
+        timerV3 -= 1
+    if timerV3 == 0:
+        timerV3 = 300
 
     frame = (frame + 0.2) % 4
 
-    if event.type == pygame.MOUSEBUTTONUP:
-        pos = pygame.mouse.get_pos()
-        if ExitMenu == 1:
-            if pos[1] > 386 and pos[1] < 468 and pos[0] > 116 and pos[0] < 303:
-                ExitMenu = 0
-                imgMenu.set_alpha(0)
-                MULTIVERSE.set_alpha(0)
-        if ExitMenu == 1:
-            if pos[1] > 384 and pos[1] < 469 and pos[0] > 501 and pos[0] < 707:
-                play = False
+    if event.type == pygame.MOUSEBUTTONDOWN:
+        mouse_presses = pygame.mouse.get_pressed()
+        if mouse_presses[0]:
+            pos = pygame.mouse.get_pos()
+            if ExitMenu == 1:
+                if pos[1] > 386 and pos[1] < 468 and pos[0] > 116 and pos[0] < 303:
+                    ExitMenu = 0
+                    imgMenu.set_alpha(0)
+                    MULTIVERSE.set_alpha(0)
+            if ExitMenu == 1:
+                if pos[1] > 384 and pos[1] < 469 and pos[0] > 501 and pos[0] < 707:
+                    play = False
+    if event.type == pygame.MOUSEBUTTONDOWN:
+        mouse_presses = pygame.mouse.get_pressed()
+        if mouse_presses[0]:
+            pos2 = pygame.mouse.get_pos()
+            if ExitMenu == 1:
+                if pos[1] > 148 and pos[1] < 181 and pos[0] > 659 and pos[0] < 685:
+                    fon = imgBG_night
+                    MULTIVERSE.set_alpha(0)
 
-    if event.type == pygame.MOUSEBUTTONUP:
-        pos2 = pygame.mouse.get_pos()
-        if ExitMenu == 1:
-            if pos[1] > 148 and pos[1] < 181 and pos[0] > 659 and pos[0] < 685:
-                fon = imgBG_night
-                MULTIVERSE.set_alpha(0)
+    if event.type == pygame.MOUSEBUTTONDOWN:
+        mouse_presses = pygame.mouse.get_pressed()
+        if mouse_presses[0]:
+            pos4 = pygame.mouse.get_pos()
+            if pos[1] > 25 and pos[1] < 75 and pos[0] > 700 and pos[0] < 750:
+                ExitMenu = 3
 
+    if event.type == pygame.MOUSEBUTTONDOWN:
+        mouse_presses = pygame.mouse.get_pressed()
+        if mouse_presses[0]:
+            pos3 = pygame.mouse.get_pos()
+            if ExitMenu == 1:
+                if pos[1] > 129 and pos[1] < 181 and pos[0] > 30 and pos[0] < 80:
+                    pipes.remove(pipe)
 
-    if event.type == pygame.MOUSEBUTTONUP:
-        pos4 = pygame.mouse.get_pos()
-        if pos[1] > 25 and pos[1] < 75 and pos[0] > 700 and pos[0] < 750:
-            ExitMenu = 3
-
-
-    if event.type == pygame.MOUSEBUTTONUP:
-        pos3 = pygame.mouse.get_pos()
-        if ExitMenu == 1:
-            if pos[1] > 129 and pos[1] < 181 and pos[0] > 30 and pos[0] < 80:
-                pipes.remove(pipe)
-
-
-    if event.type == pygame.MOUSEBUTTONUP:
-        pos6 = pygame.mouse.get_pos()
-        if ExitMenu == 3:
-            if pos[1] > 134 and pos[1] < 184 and pos[0] > 650 and pos[0] < 698:
-                ExitMenu = 1
-                imgBACK.set_alpha(0)
-                imgBird.set_alpha(300)
+    if event.type == pygame.MOUSEBUTTONDOWN:
+        mouse_presses = pygame.mouse.get_pressed()
+        if mouse_presses[0]:
+            pos6 = pygame.mouse.get_pos()
+            if ExitMenu == 3:
+                if pos[1] > 134 and pos[1] < 184 and pos[0] > 650 and pos[0] < 698:
+                    ExitMenu = 1
+                    imgBACK.set_alpha(0)
+                    imgBird.set_alpha(300)
 
     if CLOSE:
         play = False
@@ -174,7 +201,7 @@ while play:
         if SPEED3:
             FPS = 60
 
-        if state == "play":
+        if state == "play" or state == "bonus":
             if pipe.x == WIDTH // 3:
                 scores += 1
                 dscores += 1
@@ -183,20 +210,22 @@ while play:
             pipes.remove(pipe)
 
         if show_heart == 2:
-            HEARTS.append([pt, py])
+            HEARTS.append([600, py])
             show_heart = 0
         for k,h in enumerate(HEARTS):
             if h[0] < 0:
                 HEARTS.remove(h)
 
-        if event.type == pygame.MOUSEBUTTONUP:
-            pos3 = pygame.mouse.get_pos()
-            if pos[1] > 129 and pos[1] < 181 and pos[0] > 30 and pos[0] < 80:
-                pipes.remove(pipe)
-                state = "fall"
-                lives = 3
-                scores = 0
-                dscores = 0
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_presses = pygame.mouse.get_pressed()
+            if mouse_presses[0]:
+                pos3 = pygame.mouse.get_pos()
+                if pos[1] > 129 and pos[1] < 181 and pos[0] > 30 and pos[0] < 80:
+                    pipes.remove(pipe)
+                    state = "fall"
+                    lives = 3
+                    scores = 0
+                    dscores = 0
 
         if RESET_b:
             pipes.remove(pipe)
@@ -205,7 +234,29 @@ while play:
             scores = 0
             dscores = 0
 
-            
+        if scores == 20:
+            state = "bonus"
+
+
+        if state == "bonus":
+            BOMB = pygame.Rect(750, 200, 50, 50)
+            Watermmelon = pygame.Rect(750, 300, 50, 50)
+            Apple = pygame.Rect(730, 400, 70, 70)
+            Pineapple = pygame.Rect(750, 100, 50, 50)
+            if spawn_F == 1:
+                imgBOMB.set_alpha(300)
+                spawn_F = r.randrange(1, 4)
+            if spawn_F == 2:
+                imgWatermelon.set_alpha(300)
+                spawn_F = r.randrange(1, 4)
+            if spawn_F == 3:
+                imgApple.set_alpha(300)
+                spawn_F = r.randrange(1, 4)
+            if spawn_F == 4:
+                imgPineapple.set_alpha(300)
+                spawn_F = r.randrange(1, 4)
+
+
         if lives <= 0:
                 lives = 3
                 scores = 0
@@ -220,7 +271,7 @@ while play:
         py += (HEIGHT // 2 - py) * 0.1
         player.y = py
 
-    elif state == "play" and mode == 1:
+    elif state == "play" and mode == 1 or state == "bonus":
         if click:
             ay = -2
         else:
@@ -234,10 +285,10 @@ while play:
         pr = p + 380
         pt = r.randrange(p, pr)
 
-
-        if len(pipes) == 0 or pipes[len(pipes)-1].x < WIDTH - 300:
-            pipes.append(pygame.Rect(WIDTH, p, 52, hard))
-            pipes.append(pygame.Rect(WIDTH, p + 380, 52, hard))
+        if state == "play":
+            if len(pipes) == 0 or pipes[len(pipes)-1].x < WIDTH - 300:
+                pipes.append(pygame.Rect(WIDTH, p, 52, hard))
+                pipes.append(pygame.Rect(WIDTH, p + 380, 52, hard))
 
         if player.top < 0 or player.bottom > HEIGHT:
             state = "fall"
@@ -295,21 +346,29 @@ while play:
             window.blit(THEME, DARK_TEM)
             MULTIVERSE.set_alpha(0)
             imgBACK.set_alpha(300)
-    if event.type == pygame.MOUSEBUTTONUP:
-        pos5 = pygame.mouse.get_pos()
-        print(pos5)
-        if pos[1] > 229 and pos[1] < 294 and pos[0] > 265 and pos[0] < 331:
-            if fon == imgBG:
-                theme = 2
-                fon = imgBG_night
-            else:
-                theme = 1
-                fon = imgBG
+
+    if event.type == pygame.MOUSEBUTTONDOWN:        
+        mouse_presses = pygame.mouse.get_pressed()
+        if mouse_presses[0]:
+            pos5 = pygame.mouse.get_pos()
+            print(pos5)
+            if pos[1] > 229 and pos[1] < 294 and pos[0] > 265 and pos[0] < 331:
+                if fon == imgBG:
+                    theme = 2
+                    fon = imgBG_night
+                else:
+                    theme = 1
+                    fon = imgBG
 
     window.blit(Clocks, clock_item)
     if ExitMenu == 0:
         window.blit(RESETBUTT, RESET)
     window.blit(imgSETTING, SETTING_BUTTON)
+
+    window.blit(imgBOMB, BOMB)
+    window.blit(imgWatermelon, Watermmelon)
+    window.blit(imgApple, Apple)
+    window.blit(imgPineapple, Pineapple)
 
 
     image = bird.subsurface(34 * int(frame), 0 , 34, 24)
@@ -318,6 +377,9 @@ while play:
 
     imgBack = imgBACK
     window.blit(imgBack, BACK)
+
+
+
 
     if ExitMenu == 0:
         text = font1.render("Очки: " + str(scores // 2), 1, pygame.Color("black"))
