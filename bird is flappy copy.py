@@ -31,11 +31,6 @@ imgApple = pygame.image.load("apple.png")
 imgBOMB = pygame.image.load("BOMB.png")
 imgPineapple = pygame.image.load("pineapple.png")
 imgWatermelon = pygame.image.load("WATERMELON.png")
-flapp_sound = pygame.mixer.Sound("flapp.wav")
-pygame.mixer.music.load("BG_SOUND.mp3")
-flapp_sound.set_volume(0.1)
-pygame.mixer.music.set_volume(0.2)
-pygame.mixer.music.play()
 fon = imgBG
 bird = imgBird
 FpS = r.randrange(1,2)
@@ -94,7 +89,6 @@ Up = -2
 Down = -0.5
 HEARTS = []
 show_heart = 0
-flapp_sound.play()
 
 play = True
 while play:
@@ -144,14 +138,14 @@ while play:
                         state = "play"
                         imgMenu.set_alpha(0)
                         MULTIVERSE.set_alpha(0)
-                if state == "start":
+                if state == "GlMen":
                     if pos[1] > 384 and pos[1] < 469 and pos[0] > 501 and pos[0] < 707:
                         play = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_presses = pygame.mouse.get_pressed()
             if mouse_presses[0]:
                 pos2 = pygame.mouse.get_pos()
-                if state == "start":
+                if state == "GlMen":
                     if pos[1] > 148 and pos[1] < 181 and pos[0] > 659 and pos[0] < 685:
                         fon = imgBG_night
                         MULTIVERSE.set_alpha(0)
@@ -167,7 +161,7 @@ while play:
             mouse_presses = pygame.mouse.get_pressed()
             if mouse_presses[0]:
                 pos3 = pygame.mouse.get_pos()
-                if state == "start":
+                if state == "GlMen":
                     if pos[1] > 129 and pos[1] < 181 and pos[0] > 30 and pos[0] < 80:
                         pipes.remove(pipe)
 
@@ -181,7 +175,6 @@ while play:
                         imgBACK.set_alpha(0)
                         imgBird.set_alpha(300)
                         imgMenu.set_alpha(300)
-                        flapp_sound.play()
                         
 
     if CLOSE:
@@ -266,7 +259,6 @@ while play:
     elif state == "play" and mode == 1 or state == "bonus":
         if click:
             ay = -2
-            flapp_sound.play()
         else:
             ay = -0.5
 
@@ -368,6 +360,7 @@ while play:
 
     imgBack = imgBACK
     window.blit(imgBack, BACK)
+
 
 
 
