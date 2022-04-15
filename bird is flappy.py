@@ -15,8 +15,8 @@ font2 = pygame.font.Font(None, 80)
 imgBG = pygame.image.load("background.png")
 imgBird = pygame.image.load("bird_Skin.png")
 imgBird2 = pygame.image.load("bird_Skin2.png")
-imgPT = pygame.image.load("pipe_top2.png")
-imgPB = pygame.image.load("pipe_bottom2.png")
+imgPT = pygame.image.load("pipe_top.png")
+imgPB = pygame.image.load("pipe_bottom.png")
 imgBG_night = pygame.image.load("background_night.png")
 imgHEAR_DIE = pygame.image.load("HEART_DIE.png")
 imgMenu = pygame.image.load("Menu.png")
@@ -31,10 +31,12 @@ imgApple = pygame.image.load("apple.png")
 imgBOMB = pygame.image.load("BOMB.png")
 imgPineapple = pygame.image.load("pineapple.png")
 imgWatermelon = pygame.image.load("WATERMELON.png")
+imgHARD = pygame.image.load("background_hard.png")
+imgHARD2 = pygame.image.load("bird_Skin_hard.png")
 flapp_sound = pygame.mixer.Sound("flapp.wav")
 pygame.mixer.music.load("BG_SOUND.mp3")
 flapp_sound.set_volume(0.1)
-pygame.mixer.music.set_volume(0.2)
+pygame.mixer.music.set_volume(0.1)
 pygame.mixer.music.play()
 fon = imgBG
 bird = imgBird
@@ -42,6 +44,10 @@ FpS = r.randrange(1,2)
 Menu = imgMenu
 ExitMenu = 1
 mode = 1
+harder = "easy"
+
+pygame.display.set_caption("Bird is not flappy")
+pygame.display.set_icon(pygame.image.load("icon.png"))
 
 p = r.randrange(0, 200)
 pr = p + 380
@@ -61,6 +67,7 @@ dscores = 0
 Menu2 = pygame.Rect(70, 100, 650, 450)
 MenuOFF = pygame.Rect(70, 100, 650, 450)
 spawn_F = r.randrange(1, 4)
+hardcore = 1
 
 RED = (255, 0, 0)
 imgMenu.set_colorkey(RED)
@@ -182,8 +189,22 @@ while play:
                         imgBird.set_alpha(300)
                         imgMenu.set_alpha(300)
                         flapp_sound.play()
-                        
 
+
+
+
+    if hardcore == 1:
+        harder = "easy"
+    if hardcore == 2:
+        harder = "normal"
+    if hardcore == 3:
+        harder = "hard"
+    if hardcore == 4:
+        harder = "nightmare"
+    if hardcore == 5:
+        hardcore == 1
+
+                    
     if CLOSE:
         play = False
 
@@ -243,18 +264,26 @@ while play:
             scores = 0
             dscores = 0
 
+        if dscores == 1:
+            FPS += 1
+        if scores  == 0:
+            FPS = 60
+
+        if dscores == 10:
+            dscores = 0
+
 
 
         if state == "bonus":
             state == "play"
 
 
-        if lives <= 0:
-                lives = 3
-                scores = 0
+    if lives <= 0:
+            lives = 3
+            scores = 0
 
-        if scores > maxs:
-            maxs = scores
+    if scores > maxs:
+        maxs = scores
 
     if state == "start":
         if click and timer == 0 and len(pipes) == 0:
@@ -278,8 +307,23 @@ while play:
         pr = p + 380
         pt = r.randrange(p, pr)
 
+
+        if harder == "easy":
+            pipex = 400
+            fon = imgBG
+        if harder == "normal":
+            pipex = 300
+            fon = imgBG
+        if harder == "hard":
+            pipex = 150
+            fon = imgBG
+        if harder == "nightmare":
+            fon = imgHARD
+            pipex = 52
+
+
         if state == "play":
-            if len(pipes) == 0 or pipes[len(pipes)-1].x < WIDTH - 300:
+            if len(pipes) == 0 or pipes[len(pipes)-1].x < WIDTH - pipex:
                 pipes.append(pygame.Rect(WIDTH, p, 52, hard))
                 pipes.append(pygame.Rect(WIDTH, p + 380, 52, hard))
 
@@ -337,6 +381,8 @@ while play:
         window.blit(THEME, DARK_TEM)
         MULTIVERSE.set_alpha(0)
         imgBACK.set_alpha(300)
+        text = font2.render(harder, 1, pygame.Color("black"))
+        window.blit(text, (350, 340))
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN: 
                 mouse_presses = pygame.mouse.get_pressed()
@@ -350,6 +396,16 @@ while play:
                         else:
                             theme = 1
                             fon = imgBG 
+    if state == "settings":
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONDOWN: 
+                mouse_presses = pygame.mouse.get_pressed()
+                if mouse_presses[0]:
+                    pos6 = pygame.mouse.get_pos()
+                    if pos[1] > 346 and pos [1] < 384 and pos[0] > 665 and pos[0] < 705:
+                        hardcore += 1
+                    if pos[1] > 338 and pos [1] < 395 and pos[0] > 238 and pos[0] < 289:
+                        hardcore -= 1
 
     window.blit(Clocks, clock_item)
     if state == "play":
