@@ -28,7 +28,6 @@ imgLIGHT = pygame.image.load("LIGHT_THEME.png")
 imgDARK = pygame.image.load("DARK_THEME.png")
 imgBACK = pygame.image.load("BACK.png")
 imgApple = pygame.image.load("apple.png")
-imgBOMB = pygame.image.load("BOMB.png")
 imgPineapple = pygame.image.load("pineapple.png")
 imgWatermelon = pygame.image.load("WATERMELON.png")
 imgHARD = pygame.image.load("background_hard.png")
@@ -46,6 +45,8 @@ Menu = imgMenu
 ExitMenu = 1
 mode = 1
 harder = "easy"
+clockS = pygame.time.Clock()
+pygame.time.set_timer(pygame.USEREVENT, 1000)
 
 pygame.display.set_caption("Bird is not flappy")
 pygame.display.set_icon(pygame.image.load("HEART_DIE.png"))
@@ -78,9 +79,10 @@ imgMenu.set_colorkey(RED)
 WHITE2 = (255,255,255)
 imgBird.set_colorkey(WHITE2)
 
+imgHEAR_DIE.set_colorkey(WHITE)
+
 imgBACK.set_alpha(0)
 
-imgBOMB.set_alpha(0)
 imgWatermelon.set_alpha(0)
 imgApple.set_alpha(0)
 imgPineapple.set_alpha(0)
@@ -406,6 +408,7 @@ while play:
                 mouse_presses = pygame.mouse.get_pressed()
                 if mouse_presses[0]:
                     pos6 = pygame.mouse.get_pos()
+                    print(pos6)
                     if pos[1] > 346 and pos [1] < 384 and pos[0] > 665 and pos[0] < 705:
                         hardcore += 1
                     if pos[1] > 338 and pos [1] < 395 and pos[0] > 238 and pos[0] < 289:
@@ -416,7 +419,7 @@ while play:
         window.blit(RESETBUTT, RESET)
     window.blit(imgSETTING, SETTING_BUTTON)
 
-    window.blit(imgBOMB, BOMB)
+
     window.blit(imgWatermelon, Watermmelon)
     window.blit(imgApple, Apple)
     window.blit(imgPineapple, Pineapple)
@@ -431,13 +434,13 @@ while play:
     if scores == 10:
         state = "BOSS"
     if state == "BOSS":
-        window.blit(imgBOSS, BOSS)
-        scores = 0
-        d = 1
-        if d == 1:
-            d = 0 
-            pipes.remove(pipe)
-
+        for e in pygame.event.get():
+            if e.type == pygame.USEREVENT:
+                pp = 1
+                if pp == 1:
+                    window.blit(imgBOSS, BOSS)
+                    scores = 0
+        
 
 
 
