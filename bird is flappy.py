@@ -34,6 +34,7 @@ imgWatermelon = pygame.image.load("WATERMELON.png")
 imgHARD = pygame.image.load("background_hard.png")
 imgHARD2 = pygame.image.load("bird_Skin_hard.png")
 flapp_sound = pygame.mixer.Sound("flapp.wav")
+imgBOSS = pygame.image.load("BOSS.png")
 pygame.mixer.music.load("BG_SOUND.mp3")
 flapp_sound.set_volume(0.1)
 pygame.mixer.music.set_volume(0.1)
@@ -47,7 +48,7 @@ mode = 1
 harder = "easy"
 
 pygame.display.set_caption("Bird is not flappy")
-pygame.display.set_icon(pygame.image.load("icon.png"))
+pygame.display.set_icon(pygame.image.load("HEART_DIE.png"))
 
 p = r.randrange(0, 200)
 pr = p + 380
@@ -68,6 +69,8 @@ Menu2 = pygame.Rect(70, 100, 650, 450)
 MenuOFF = pygame.Rect(70, 100, 650, 450)
 spawn_F = r.randrange(1, 4)
 hardcore = 1
+BOSS = pygame.Rect(310, 250, 150, 150)
+imgBOSS.set_colorkey(WHITE)
 
 RED = (255, 0, 0)
 imgMenu.set_colorkey(RED)
@@ -84,6 +87,7 @@ imgPineapple.set_alpha(0)
 
 state = "GlMen"
 timer = 60
+Btimer = 300
 timerV2 = 120
 timerV3 = 300
 pipes = []
@@ -151,14 +155,14 @@ while play:
                         state = "play"
                         imgMenu.set_alpha(0)
                         MULTIVERSE.set_alpha(0)
-                if state == "start":
+                if state == "GlMen":
                     if pos[1] > 384 and pos[1] < 469 and pos[0] > 501 and pos[0] < 707:
                         play = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_presses = pygame.mouse.get_pressed()
             if mouse_presses[0]:
                 pos2 = pygame.mouse.get_pos()
-                if state == "start":
+                if state == "GlMen":
                     if pos[1] > 148 and pos[1] < 181 and pos[0] > 659 and pos[0] < 685:
                         fon = imgBG_night
                         MULTIVERSE.set_alpha(0)
@@ -174,7 +178,7 @@ while play:
             mouse_presses = pygame.mouse.get_pressed()
             if mouse_presses[0]:
                 pos3 = pygame.mouse.get_pos()
-                if state == "start":
+                if state == "GlMen":
                     if pos[1] > 129 and pos[1] < 181 and pos[0] > 30 and pos[0] < 80:
                         pipes.remove(pipe)
 
@@ -292,7 +296,7 @@ while play:
         py += (HEIGHT // 2 - py) * 0.1
         player.y = py
 
-    elif state == "play" and mode == 1 or state == "bonus":
+    elif state == "play" and mode == 1 or state == "BOSS":
         if click:
             ay = -2
             flapp_sound.play()
@@ -424,6 +428,15 @@ while play:
 
     imgBack = imgBACK
     window.blit(imgBack, BACK)
+    if scores == 10:
+        state = "BOSS"
+    if state == "BOSS":
+        window.blit(imgBOSS, BOSS)
+        scores = 0
+        d = 1
+        if d == 1:
+            d = 0 
+            pipes.remove(pipe)
 
 
 
