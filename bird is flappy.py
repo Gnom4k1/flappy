@@ -1,3 +1,5 @@
+from importlib.abc import Traversable
+from trace import Trace
 import pygame
 import random as r
 pygame.init()
@@ -28,10 +30,12 @@ imgLIGHT = pygame.image.load("LIGHT_THEME.png")
 imgDARK = pygame.image.load("DARK_THEME.png")
 imgBACK = pygame.image.load("BACK.png")
 imgApple = pygame.image.load("apple.png")
+BirdBut = pygame.image.load("BirdBut.png")
 imgPineapple = pygame.image.load("pineapple.png")
 imgWatermelon = pygame.image.load("WATERMELON.png")
 imgHARD = pygame.image.load("background_hard.png")
 imgHARD2 = pygame.image.load("bird_Skin_hard.png")
+imgTrava = pygame.image.load("trava.png")
 flapp_sound = pygame.mixer.Sound("flapp.wav")
 imgBOSS = pygame.image.load("BOSS.png")
 pygame.mixer.music.load("BG_SOUND.mp3")
@@ -61,12 +65,14 @@ clock_item = pygame.Rect(650, 132, 50, 50)
 SETTING_BUTTON = pygame.Rect(700, 25, 50, 50)
 RESET = pygame.Rect(30,132, 50, 50)
 DARK_TEM = pygame.Rect(275,244, 50, 50)
+trava2 = pygame.Rect(0,550,288,50)
 BACK = pygame.Rect(650,136,50,50)
 WHITE = (255,255,255)
 MULTIVERSE.set_colorkey(WHITE)
 frame = 0
 dscores = 0
 Menu2 = pygame.Rect(70, 100, 650, 450)
+Platformer = pygame.Rect(288, 288, 50, 100)
 MenuOFF = pygame.Rect(70, 100, 650, 450)
 spawn_F = r.randrange(1, 4)
 hardcore = 1
@@ -94,10 +100,12 @@ timerV2 = 120
 timerV3 = 300
 pipes = []
 bges = []
+trav = []
 hard = 200
 theme = 1
 
 bges.append(pygame.Rect(0, 0, 288, 600))
+trav.append(pygame.Rect(0, 550, 288, 50))
 
 lives = 3
 scores = 0
@@ -157,6 +165,10 @@ while play:
                         state = "play"
                         imgMenu.set_alpha(0)
                         MULTIVERSE.set_alpha(0)
+                if state == "platform":
+                    if pos[1] > 386 and pos[1] < 468 and pos[0] > 116 and pos[0] < 303:
+                        state == "platformer"
+                        imgMenu.set_alpha(0)
                 if state == "GlMen":
                     if pos[1] > 384 and pos[1] < 469 and pos[0] > 501 and pos[0] < 707:
                         play = False
@@ -166,7 +178,7 @@ while play:
                 pos2 = pygame.mouse.get_pos()
                 if state == "GlMen":
                     if pos[1] > 148 and pos[1] < 181 and pos[0] > 659 and pos[0] < 685:
-                        fon = imgBG_night
+                        state = "platform"
                         MULTIVERSE.set_alpha(0)
 
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -217,12 +229,19 @@ while play:
     for i in range(len(bges)-1, -1, -1):
         bg = bges[i]
         bg.x -= 1
+    for o in range(len(trav)-1, -1, -1):
+        trava = trav[o]
+        trava.x -= 1
 
-        if bg.right < 0:
-            bges.remove(bg)
+    if bg.right < 0:
+        bges.remove(bg)
 
-        if bges[len(bges)-1].right <= WIDTH:
-            bges.append(pygame.Rect(bges[len(bges)-1].right, 0, 288, 600))
+    if bges[len(bges)-1].right <= WIDTH:
+        bges.append(pygame.Rect(bges[len(bges)-1].right, 0, 288, 600))
+
+
+    if trav[len(trav)-1].right <= WIDTH:
+        trav.append(pygame.Rect(trav[len(trav)-1].right, 550, 288, 600))
 
     for i in range(len(pipes)-1, -1, -1):
         pipe = pipes[i]
@@ -326,6 +345,7 @@ while play:
         if harder == "nightmare":
             fon = imgHARD
             pipex = 52
+        
 
 
         if state == "play":
@@ -346,6 +366,11 @@ while play:
             if player.colliderect(pygame.Rect(h[0]+1, h[1]+1, 30, 30)):
                 HEARTS.remove(h)
                 lives -= 1
+                
+                if state =="platformer":
+                    for trava in trav:
+                        if player.colliderect(trava):
+                            ay = -1
 
     elif state == "fall":
         sy, ay = 0, 0
@@ -358,6 +383,8 @@ while play:
     window.fill(pygame.Color("black"))
     for bg in bges:
         window.blit(fon, bg)
+    for trava in trav:
+        window.blit(imgTrava, trava)
 
 
     for pipe in pipes:
@@ -423,23 +450,24 @@ while play:
     window.blit(imgWatermelon, Watermmelon)
     window.blit(imgApple, Apple)
     window.blit(imgPineapple, Pineapple)
+    window.blit(imgPineapple, Pineapple)
 
 
     image = bird.subsurface(34 * int(frame), 0 , 34, 24)
     image = pygame.transform.rotate(image, -sy * 2)
     window.blit(image, player)
 
-    imgBack = imgBACK
-    window.blit(imgBack, BACK)
-    if scores == 10:
-        state = "BOSS"
-    if state == "BOSS":
-        for e in pygame.event.get():
-            if e.type == pygame.USEREVENT:
-                pp = 1
-                if pp == 1:
-                    window.blit(imgBOSS, BOSS)
-                    scores = 0
+#imgBack = imgBACK
+#window.blit(imgBack, BACK)
+#if scores == 10:
+#    state = "BOSS"
+#if state == "BOSS":
+#    for e in pygame.event.get():
+#        if e.type == pygame.USEREVENT:
+#            pp = 1
+#            if pp == 1:
+#                window.blit(imgBOSS, BOSS)
+#                scores = 0
         
 
 
