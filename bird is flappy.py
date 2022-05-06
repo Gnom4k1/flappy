@@ -1,5 +1,3 @@
-from importlib.abc import Traversable
-from trace import Trace
 import pygame
 import random as r
 pygame.init()
@@ -31,13 +29,13 @@ imgDARK = pygame.image.load("DARK_THEME.png")
 imgBACK = pygame.image.load("BACK.png")
 imgApple = pygame.image.load("apple.png")
 BirdBut = pygame.image.load("BirdBut.png")
-imgPineapple = pygame.image.load("pineapple.png")
 imgWatermelon = pygame.image.load("WATERMELON.png")
 imgHARD = pygame.image.load("background_hard.png")
 imgHARD2 = pygame.image.load("bird_Skin_hard.png")
 imgTrava = pygame.image.load("trava.png")
 flapp_sound = pygame.mixer.Sound("flapp.wav")
 imgBOSS = pygame.image.load("BOSS.png")
+imgSpikes = pygame.image.load("Spikes.png")
 pygame.mixer.music.load("BG_SOUND.mp3")
 flapp_sound.set_volume(0.1)
 pygame.mixer.music.set_volume(0.1)
@@ -59,7 +57,7 @@ p = r.randrange(0, 200)
 pr = p + 380
 pt = r.randrange(p, pr)
 
-py, sy, ay = HEIGHT // 2, 0, 0
+py, sy, ay, my = HEIGHT // 2, 0, 0, 453
 player = pygame.Rect(WIDTH // 3, py, 34, 24)
 clock_item = pygame.Rect(650, 132, 50, 50)
 SETTING_BUTTON = pygame.Rect(700, 25, 50, 50)
@@ -72,7 +70,7 @@ MULTIVERSE.set_colorkey(WHITE)
 frame = 0
 dscores = 0
 Menu2 = pygame.Rect(70, 100, 650, 450)
-Platformer = pygame.Rect(288, 288, 50, 100)
+runner = pygame.Rect(288, 288, 50, 100)
 MenuOFF = pygame.Rect(70, 100, 650, 450)
 spawn_F = r.randrange(1, 4)
 hardcore = 1
@@ -85,13 +83,14 @@ imgMenu.set_colorkey(RED)
 WHITE2 = (255,255,255)
 imgBird.set_colorkey(WHITE2)
 
+BirdBut.set_colorkey(WHITE)
+
 imgHEAR_DIE.set_colorkey(WHITE)
 
 imgBACK.set_alpha(0)
 
 imgWatermelon.set_alpha(0)
 imgApple.set_alpha(0)
-imgPineapple.set_alpha(0)
 
 state = "GlMen"
 timer = 60
@@ -101,11 +100,13 @@ timerV3 = 300
 pipes = []
 bges = []
 trav = []
+Spikes = []
 hard = 200
 theme = 1
 
 bges.append(pygame.Rect(0, 0, 288, 600))
 trav.append(pygame.Rect(0, 550, 288, 50))
+Spikes.append(pygame.Rect(0, 453, 75, 75))
 
 lives = 3
 scores = 0
@@ -128,6 +129,7 @@ while play:
     SPEED1 = keys[pygame.K_q]
     SPEED2 = keys[pygame.K_e]
     SPEED3 = keys[pygame.K_w]
+    JUMP = keys[pygame.K_SPACE]
     Up2 =keys[pygame.K_UP]
     Down2 = keys[pygame.K_DOWN]
     RESET_b = keys[pygame.K_r]
@@ -165,10 +167,7 @@ while play:
                         state = "play"
                         imgMenu.set_alpha(0)
                         MULTIVERSE.set_alpha(0)
-                if state == "platform":
-                    if pos[1] > 386 and pos[1] < 468 and pos[0] > 116 and pos[0] < 303:
-                        state == "platformer"
-                        imgMenu.set_alpha(0)
+
                 if state == "GlMen":
                     if pos[1] > 384 and pos[1] < 469 and pos[0] > 501 and pos[0] < 707:
                         play = False
@@ -178,8 +177,11 @@ while play:
                 pos2 = pygame.mouse.get_pos()
                 if state == "GlMen":
                     if pos[1] > 148 and pos[1] < 181 and pos[0] > 659 and pos[0] < 685:
-                        state = "platform"
+                        state = "runnerMen"
                         MULTIVERSE.set_alpha(0)
+                        imgMenu.set_alpha(0)
+                        player = pygame.Rect(HEIGHT /3 , my, 50, 100)
+                        bird = BirdBut
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_presses = pygame.mouse.get_pressed()
@@ -241,7 +243,31 @@ while play:
 
 
     if trav[len(trav)-1].right <= WIDTH:
-        trav.append(pygame.Rect(trav[len(trav)-1].right, 550, 288, 600))
+        trav.append(pygame.Rect(trav[len(trav)-1].right, 550, 288, 50))
+
+
+
+    if state == "runnerMen":
+        for m in range(len(Spikes)-1, -1, -1):
+            spike = Spikes[m]
+            spike.x -= 3
+
+        if spike.right < 0:
+            Spikes.remove(spike)
+
+        if Spikes[len(Spikes)-1].right < 800:
+            Spikes.append(pygame.Rect(Spikes[len(Spikes)-1].right, 473, 500, 75))
+        if my < 453:
+            my += 2
+        if my >= 453:
+            if JUMP:
+                my = 303
+        if player.colliderect(spike):
+            lives -= 1
+            print("й")
+        else: print("ц")
+        player = pygame.Rect(HEIGHT /3 , my, 50, 100)
+
 
     for i in range(len(pipes)-1, -1, -1):
         pipe = pipes[i]
@@ -367,10 +393,10 @@ while play:
                 HEARTS.remove(h)
                 lives -= 1
                 
-                if state =="platformer":
+                if state =="runner":
                     for trava in trav:
                         if player.colliderect(trava):
-                            ay = -1
+                            ay-= 1
 
     elif state == "fall":
         sy, ay = 0, 0
@@ -385,6 +411,8 @@ while play:
         window.blit(fon, bg)
     for trava in trav:
         window.blit(imgTrava, trava)
+    for spike in Spikes:
+        window.blit(imgSpikes, spike)
 
 
     for pipe in pipes:
@@ -449,13 +477,15 @@ while play:
 
     window.blit(imgWatermelon, Watermmelon)
     window.blit(imgApple, Apple)
-    window.blit(imgPineapple, Pineapple)
-    window.blit(imgPineapple, Pineapple)
 
 
-    image = bird.subsurface(34 * int(frame), 0 , 34, 24)
-    image = pygame.transform.rotate(image, -sy * 2)
-    window.blit(image, player)
+
+    if state == "runnerMen":
+        window.blit(BirdBut, player)
+    else:
+        image = bird.subsurface(34 * int(frame), 0 , 34, 24)
+        image = pygame.transform.rotate(image, -sy * 2)
+        window.blit(image, player)
 
 #imgBack = imgBACK
 #window.blit(imgBack, BACK)
