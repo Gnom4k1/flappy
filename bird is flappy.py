@@ -13,7 +13,7 @@ font1 = pygame.font.Font(None, 35)
 font2 = pygame.font.Font(None, 80)
 
 imgBG = pygame.image.load("background.png")
-imgBird = pygame.image.load("bird_Skin.png")
+imgBird = pygame.image.load("bird.png")
 imgBird2 = pygame.image.load("bird_Skin2.png")
 imgPT = pygame.image.load("pipe_top.png")
 imgPB = pygame.image.load("pipe_bottom.png")
@@ -81,7 +81,6 @@ RED = (255, 0, 0)
 imgMenu.set_colorkey(RED)
 
 WHITE2 = (255,255,255)
-imgBird.set_colorkey(WHITE2)
 
 BirdBut.set_colorkey(WHITE)
 
@@ -91,6 +90,10 @@ imgBACK.set_alpha(0)
 
 imgWatermelon.set_alpha(0)
 imgApple.set_alpha(0)
+
+imgTrava.set_colorkey(WHITE)
+imgSpikes.set_colorkey(WHITE)
+imgSETTING.set_colorkey(WHITE)
 
 state = "GlMen"
 timer = 60
@@ -255,10 +258,10 @@ while play:
         if spike.right < 0:
             Spikes.remove(spike)
 
-        if Spikes[len(Spikes)-1].right < 800:
-            Spikes.append(pygame.Rect(Spikes[len(Spikes)-1].right, 473, 500, 75))
+        if Spikes[len(Spikes)-1].right < 100:
+            Spikes.append(pygame.Rect(500, 473, 75, 75))
         if my < 453:
-            my += 2
+            my += 1
         if my >= 453:
             if JUMP:
                 my = 303
@@ -486,6 +489,9 @@ while play:
         image = bird.subsurface(34 * int(frame), 0 , 34, 24)
         image = pygame.transform.rotate(image, -sy * 2)
         window.blit(image, player)
+    if spike in Spikes:
+        if state == "play" or state == "GlMen":
+            Spikes.remove(spike)
 
 #imgBack = imgBACK
 #window.blit(imgBack, BACK)
